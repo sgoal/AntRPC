@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.sgl.impl.HelloServiceImpl;
 import com.sgl.impl.InterfaceManager;
 
 /**
@@ -16,7 +17,9 @@ import com.sgl.impl.InterfaceManager;
  *
  */
 public class Server extends Thread{
-	
+	static {
+		HelloServiceImpl.register();
+	}
     @Override
 	public void run() {
     	ServerSocket serverSocket  = null;

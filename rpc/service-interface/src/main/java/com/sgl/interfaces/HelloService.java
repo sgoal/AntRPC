@@ -1,5 +1,5 @@
 package com.sgl.interfaces;
 
 public interface HelloService {
-	public void sayHello(String name);
+	public String sayHello(String name);
 }

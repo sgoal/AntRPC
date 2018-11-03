@@ -23,7 +23,7 @@ public class InterfaceManager {
 	
 	private Map<String, Class<?>> interfaceToImpl = new HashMap<>();
 	
-	public boolean regeister(String interfaceName, Class<?> impl) {
+	public boolean register(String interfaceName, Class<?> impl) {
 		if(interfaceToImpl.containsKey(interfaceName)) {
 			return false;
 		}

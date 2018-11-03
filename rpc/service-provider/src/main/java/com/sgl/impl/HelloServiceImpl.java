@@ -3,8 +3,8 @@ package com.sgl.impl;
 import com.sgl.interfaces.HelloService;
 
 public class HelloServiceImpl implements HelloService {
-	static {
-		InterfaceManager.getInstance().regeister("HelloService", HelloServiceImpl.class);
+	static public void register() {
+		InterfaceManager.getInstance().register("HelloService", HelloServiceImpl.class);
 	}
 	
 	public HelloServiceImpl() {
@@ -12,8 +12,9 @@ public class HelloServiceImpl implements HelloService {
 	}
 	
 	@Override
-	public void sayHello(String name) {
+	public String sayHello(String name) {
 		System.out.println("need hello to " + name);
+		return "need hello to " + name;
 	}
 	
 
