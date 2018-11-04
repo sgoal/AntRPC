@@ -7,12 +7,11 @@ public class SubReqClientHandler extends SimpleChannelInboundHandler<RpcResponse
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		// TODO Auto-generated method stub
-//		super.channelActive(ctx);
+		System.out.println("channel active...");
 		for(int i=0;i<10;i++) {
 			RpcRequest rpcRequest = new RpcRequest();
 			rpcRequest.setMehtodName("test" + i);
-			ctx.write(rpcRequest);
+			ctx.writeAndFlush(rpcRequest);
 			
 		}
 	}

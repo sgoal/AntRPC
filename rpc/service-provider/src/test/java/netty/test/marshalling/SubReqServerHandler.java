@@ -13,7 +13,7 @@ public class SubReqServerHandler extends ChannelInboundHandlerAdapter{
 		System.out.println("read: "+ request.getMehtodName());
 		RpcResponse response = new RpcResponse();
 		response.setMehtodName(request.getMehtodName()+"lalalala");
-		ctx.write(response);
+		ctx.writeAndFlush(response);
 //		super.channelRead(ctx, msg);
 	}
 	

@@ -25,7 +25,7 @@ public class MarshallingCodeCFactory {
 		UnmarshallerProvider provider = new DefaultUnmarshallerProvider(
 				factory, configuration);
 		
-		MarshallingDecoder decoder = new MarshallingDecoder(provider);
+		MarshallingDecoder decoder = new MarshallingDecoder(provider,1024 * 1024 * 1);
 		return decoder;
 		
 	}

@@ -19,7 +19,8 @@ public class SubReqClient {
 			Bootstrap bootstrap = new Bootstrap();
 			bootstrap.group(group).channel(NioSocketChannel.class)
 			.option(ChannelOption.TCP_NODELAY, true)
-					.handler(new LoggingHandler(LogLevel.INFO)).handler(new ChannelInitializer<SocketChannel>() {
+					.handler(new LoggingHandler(LogLevel.INFO))
+					.handler(new ChannelInitializer<SocketChannel>() {
 
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
@@ -41,7 +42,7 @@ public class SubReqClient {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		System.out.println("server start..");
+		System.out.println("client start..");
 		new SubReqClient().connect("127.0.0.1", 9112);
 	}
 }
