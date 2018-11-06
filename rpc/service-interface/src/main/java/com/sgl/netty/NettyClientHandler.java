@@ -22,4 +22,5 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
 		System.out.println("client recieve: " + msg);
 		
 	}
+	
 }

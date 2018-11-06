@@ -1,6 +1,10 @@
 package com.sgl.netty;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -12,10 +16,12 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 public class NettyClient {
+	private Bootstrap bootstrap;
+	private Map<String, Channel> ipToChannels = new ConcurrentHashMap<>();
 	public void connect(String host, int port) throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
-			Bootstrap bootstrap = new Bootstrap();
+			bootstrap = new Bootstrap();
 			bootstrap.group(group).channel(NioSocketChannel.class)
 			.option(ChannelOption.TCP_NODELAY, true)
 					.handler(new LoggingHandler(LogLevel.INFO))
@@ -38,5 +44,10 @@ public class NettyClient {
 			// TODO: handle finally clause
 			group.shutdownGracefully();
 		}
+	}
+	
+	public void connectAndGet() {
+		
+		
 	}
 }
