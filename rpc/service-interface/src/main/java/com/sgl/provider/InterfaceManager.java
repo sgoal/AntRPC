@@ -1,4 +1,4 @@
-package com.sgl.impl;
+package com.sgl.provider;
 
 import java.util.HashMap;
 import java.util.Map;
