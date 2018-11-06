@@ -1,6 +1,12 @@
 package com.sgl.provider;
 
+import com.sgl.impl.HelloServiceImpl;
+
 public class ServerApp {
+	static {
+		HelloServiceImpl.register();
+	}
+	
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.start();

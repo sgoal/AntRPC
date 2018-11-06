@@ -1,6 +1,4 @@
-package netty.test.marshalling;
-
-import com.sgl.netty.MarshallingCodeCFactory;
+package com.sgl.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -13,8 +11,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class SubReqClient {
-
+public class NettyClient {
 	public void connect(String host, int port) throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
@@ -29,7 +26,7 @@ public class SubReqClient {
 							// TODO Auto-generated method stub
 							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
 							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new SubReqClientHandler());
+							ch.pipeline().addLast(new NettyClientHandler());
 
 						}
 					});
@@ -41,10 +38,5 @@ public class SubReqClient {
 			// TODO: handle finally clause
 			group.shutdownGracefully();
 		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		System.out.println("client start..");
-		new SubReqClient().connect("127.0.0.1", 9112);
 	}
 }
