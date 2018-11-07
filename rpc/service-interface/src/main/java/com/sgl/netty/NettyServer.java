@@ -14,6 +14,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.Future;
+import netty.test.marshalling.SubReqServer;
+import netty.test.marshalling.SubReqServerHandler;
 
 
 public class NettyServer {
@@ -28,8 +30,29 @@ public class NettyServer {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workGroup = new NioEventLoopGroup();
 		try {
+//			ServerBootstrap bootstrap = new ServerBootstrap();
+//			bootstrap.group(bossGroup, workGroup)
+//			.channel(NioServerSocketChannel.class)
+//			.option(ChannelOption.SO_BACKLOG, 100)
+//			.handler(new LoggingHandler(LogLevel.INFO))
+//			.childHandler(new ChannelInitializer<SocketChannel>() {
+//
+//						@Override
+//						protected void initChannel(SocketChannel ch) throws Exception {
+//							// TODO Auto-generated method stub
+//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());	
+//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
+////							ch.pipeline().addLast(new NettyServerHandler(NettyServer.this));
+//							ch.pipeline().addLast(new SubReqServerHandler());
+//							
+//						}
+//			});
+//			
+//			ChannelFuture future = bootstrap.bind(port).sync();
+//			System.out.println("server bind.....");
+//			future.channel().closeFuture().sync();
 			ServerBootstrap bootstrap = new ServerBootstrap();
-			bootstrap.group(bossGroup, bossGroup)
+			bootstrap.group(bossGroup, workGroup)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 100)
 			.handler(new LoggingHandler(LogLevel.INFO))
@@ -42,14 +65,13 @@ public class NettyServer {
 							.addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
 							ch.pipeline()
 							.addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new NettyServerHandler(NettyServer.this));
+							ch.pipeline().addLast(new SubReqServerHandler());
 							
 						}
 			});
 			
 			ChannelFuture future = bootstrap.bind(port).sync();
 			future.channel().closeFuture().sync();
-			
 		} finally {
 			// TODO: handle finally clause
 			bossGroup.shutdownGracefully();
@@ -59,5 +81,9 @@ public class NettyServer {
 	
 	public Future<?> submitTask(Runnable task) {
 		return (Future<?>) pool.submit(task);
+	}
+	
+	public static void main(String[] args) throws Exception {
+		new SubReqServer().bind(9112);
 	}
 }

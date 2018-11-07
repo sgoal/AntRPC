@@ -19,7 +19,7 @@ public class SubReqServer {
 		EventLoopGroup workGroup = new NioEventLoopGroup();
 		try {
 			ServerBootstrap bootstrap = new ServerBootstrap();
-			bootstrap.group(bossGroup, bossGroup)
+			bootstrap.group(bossGroup, workGroup)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 100)
 			.handler(new LoggingHandler(LogLevel.INFO))

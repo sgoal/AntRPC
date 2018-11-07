@@ -1,6 +1,12 @@
 package com.sgl.rpcproxy;
 
-public class RpcResponse {
+import java.io.Serializable;
+
+public class RpcResponse implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4743077481471584446L;
 	private String requestId;
 	private String methodNname;
 	private Object result;

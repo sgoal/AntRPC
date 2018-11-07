@@ -8,9 +8,10 @@ import com.sgl.rpcproxy.RpcResponse;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 
-public class NettyServerHandler  extends ChannelInboundHandlerAdapter{
+public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>{
 	
 	NettyServer  server;
 	
@@ -20,13 +21,21 @@ public class NettyServerHandler  extends ChannelInboundHandlerAdapter{
 	
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		//ÓÀÔ¶²»ÒªÔÚ Netty µÄ I/O Ïß³ÌÉÏÖ´ÐÐÈÎºÎ·Ç CPU ÏÞ¶¨µÄ´úÂë¡ª¡ªÄã½«»á´Ó Netty ÍµÈ¡±¦¹óµÄ×ÊÔ´£¬²¢Òò´ËÓ°Ïìµ½·þÎñÆ÷µÄÍÌÍÂÁ¿¡£
-		
+		// TODO Auto-generated method stub
+		super.channelRead(ctx, msg);
+		System.out.println(msg+"11111111");
+	}
+	
+	
+	@Override
+	public void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
+		//ï¿½ï¿½Ô¶ï¿½ï¿½Òªï¿½ï¿½ Netty ï¿½ï¿½ I/O ï¿½ß³ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ÎºÎ·ï¿½ CPU ï¿½Þ¶ï¿½ï¿½Ä´ï¿½ï¿½ë¡ªï¿½ï¿½ï¿½ã½«ï¿½ï¿½ï¿½ Netty ÍµÈ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó°ï¿½ìµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		System.out.println(msg.getMethodName());
 		Runnable task = new Runnable() {
 
 			@Override
 			public void run() {
-				RpcRequest request = (RpcRequest)msg;
+				RpcRequest request = msg;
 				System.out.println("read: "+ request.getInterfaceName());
 				Class implClass = InterfaceManager.getInstance().findClass(request.getInterfaceName());
 				
@@ -50,4 +59,11 @@ public class NettyServerHandler  extends ChannelInboundHandlerAdapter{
 		
 		server.submitTask(task);
 	}
+
+
+//	@Override
+//	protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }
