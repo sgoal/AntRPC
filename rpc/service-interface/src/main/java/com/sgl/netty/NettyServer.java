@@ -1,5 +1,8 @@
 package com.sgl.netty;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,9 +13,17 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.Future;
 
 
 public class NettyServer {
+	private ExecutorService pool = null;
+	
+	public NettyServer() {
+		int coreNum = Runtime.getRuntime().availableProcessors(); 
+		pool = Executors.newFixedThreadPool(coreNum*2);
+	}
+	
 	public void bind(int port) throws Exception {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -31,7 +42,7 @@ public class NettyServer {
 							.addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
 							ch.pipeline()
 							.addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new NettyServerHandler());
+							ch.pipeline().addLast(new NettyServerHandler(NettyServer.this));
 							
 						}
 			});
@@ -44,5 +55,9 @@ public class NettyServer {
 			bossGroup.shutdownGracefully();
 			workGroup.shutdownGracefully();
 		}
+	}
+	
+	public Future<?> submitTask(Runnable task) {
+		return (Future<?>) pool.submit(task);
 	}
 }
