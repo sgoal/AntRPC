@@ -1,8 +1,12 @@
-package netty.test.marshalling;
+package com.sgl.netty;
 
-import com.sgl.netty.MarshallingCodeCFactory;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.sgl.rpcproxy.RpcRequest;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -13,12 +17,15 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class SubReqClient {
-
+public class NettyClient {
+	private volatile Bootstrap bootstrap;
+	private Map<String, Channel> ipToChannels = new ConcurrentHashMap<>();
+	private NettyClientHandler handler;
 	public void connect(String host, int port) throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
-			Bootstrap bootstrap = new Bootstrap();
+			handler = new NettyClientHandler();
+			bootstrap = new Bootstrap();
 			bootstrap.group(group).channel(NioSocketChannel.class)
 			.option(ChannelOption.TCP_NODELAY, true)
 					.handler(new LoggingHandler(LogLevel.INFO))
@@ -29,7 +36,7 @@ public class SubReqClient {
 							// TODO Auto-generated method stub
 							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
 							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new SubReqClientHandler());
+							ch.pipeline().addLast(handler);
 
 						}
 					});
@@ -43,8 +50,10 @@ public class SubReqClient {
 		}
 	}
 	
-	public static void main(String[] args) throws Exception {
-		System.out.println("client start..");
-		new SubReqClient().connect("127.0.0.1", 9112);
+	public Object connectAndGet(String host, int port, RpcRequest request) throws Exception {
+		if(bootstrap == null) {
+			connect(host, port);
+		}
+		return handler.handleRpcRequest(request);
 	}
 }

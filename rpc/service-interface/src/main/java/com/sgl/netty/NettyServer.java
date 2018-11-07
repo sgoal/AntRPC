@@ -1,6 +1,7 @@
-package netty.test.marshalling;
+package com.sgl.netty;
 
-import com.sgl.netty.MarshallingCodeCFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -12,8 +13,17 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.Future;
 
-public class SubReqServer {
+
+public class NettyServer {
+	private ExecutorService pool = null;
+	
+	public NettyServer() {
+		int coreNum = Runtime.getRuntime().availableProcessors(); 
+		pool = Executors.newFixedThreadPool(coreNum*2);
+	}
+	
 	public void bind(int port) throws Exception {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -32,7 +42,7 @@ public class SubReqServer {
 							.addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
 							ch.pipeline()
 							.addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new SubReqServerHandler());
+							ch.pipeline().addLast(new NettyServerHandler(NettyServer.this));
 							
 						}
 			});
@@ -47,8 +57,7 @@ public class SubReqServer {
 		}
 	}
 	
-	public static void main(String[] args) throws Exception {
-		System.out.println("server start...");
-		new SubReqServer().bind(9112);
+	public Future<?> submitTask(Runnable task) {
+		return (Future<?>) pool.submit(task);
 	}
 }

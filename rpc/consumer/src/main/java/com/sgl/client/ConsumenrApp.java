@@ -7,7 +7,7 @@ public class ConsumenrApp {
 	public static void main(String[] args) {
 		RpcProxy proxy = new RpcProxy();
 		HelloService service = (HelloService) proxy.getProxy(HelloService.class,
-				"127.0.01", 9112);
+				"127.0.0.1", 9112);
 		System.out.println(service.sayHello("baby coffe"));
 	}
 }

@@ -1,6 +1,7 @@
 package com.sgl.impl;
 
 import com.sgl.interfaces.HelloService;
+import com.sgl.provider.InterfaceManager;
 
 public class HelloServiceImpl implements HelloService {
 	static public void register() {

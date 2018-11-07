@@ -1,4 +1,4 @@
-package netty.test.marshalling;
+package com.sgl.netty;
 
 import org.jboss.marshalling.MarshallerFactory;
 import org.jboss.marshalling.Marshalling;
