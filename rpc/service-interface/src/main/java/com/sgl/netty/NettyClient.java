@@ -3,6 +3,8 @@ package com.sgl.netty;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
+
 import com.sgl.rpcproxy.RpcRequest;
 
 import io.netty.bootstrap.Bootstrap;
@@ -26,9 +28,9 @@ public class NettyClient {
 	private volatile Bootstrap bootstrap;
 	private Map<String, Channel> ipToChannels = new ConcurrentHashMap<>();
 	private NettyClientHandler handler;
-	
+	private EventLoopGroup group;
 	public void connect(String host, int port) throws Exception {
-		EventLoopGroup group = new NioEventLoopGroup();
+		group = new NioEventLoopGroup();
 		try {
 			handler = new NettyClientHandler();
 //			bootstrap = new Bootstrap();
@@ -79,6 +81,10 @@ public class NettyClient {
 		}
 	}
 	
+	public void stop() {
+		group.shutdownGracefully();
+	}
+
 	public Object connectAndGet(String host, int port, RpcRequest request) throws Exception {
 		if(bootstrap == null) {
 			connect(host, port);
