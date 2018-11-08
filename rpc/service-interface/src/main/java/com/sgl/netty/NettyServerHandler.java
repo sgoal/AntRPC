@@ -22,12 +22,6 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 		this.server = server;
 	}
 	
-//	@Override
-//	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//		// TODO Auto-generated method stub
-//		super.channelRead(ctx, msg);
-//		System.out.println(msg,111111111111);
-//	}
 
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
