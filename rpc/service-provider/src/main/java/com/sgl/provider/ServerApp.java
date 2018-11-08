@@ -3,7 +3,6 @@ package com.sgl.provider;
 import com.sgl.impl.HelloServiceImpl;
 import com.sgl.netty.NettyServer;
 
-import netty.test.marshalling.SubReqServer;
 
 public class ServerApp {
 	static {

@@ -21,8 +21,6 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import netty.test.marshalling.SubReqClient;
-import netty.test.marshalling.SubReqClientHandler;
 
 public class NettyClient {
 	private volatile Bootstrap bootstrap;
@@ -33,25 +31,6 @@ public class NettyClient {
 		group = new NioEventLoopGroup();
 		try {
 			handler = new NettyClientHandler();
-//			bootstrap = new Bootstrap();
-//			bootstrap.group(group).channel(NioSocketChannel.class)
-//			.option(ChannelOption.TCP_NODELAY, true)
-//					.handler(new LoggingHandler(LogLevel.INFO))
-//					.handler(new ChannelInitializer<SocketChannel>() {
-//
-//						@Override
-//						protected void initChannel(SocketChannel ch) throws Exception {
-//							// TODO Auto-generated method stub
-//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
-//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-////							ch.pipeline().addLast(handler);
-//							ch.pipeline().addLast(new SubReqClientHandler());
-//						}
-//					});
-//
-//			ChannelFuture future = bootstrap.connect(host, port).sync();
-//			System.out.println("connect.....");
-//			future.channel().closeFuture().sync();
 			Bootstrap bootstrap = new Bootstrap();
 			bootstrap.group(group).channel(NioSocketChannel.class)
 			.option(ChannelOption.TCP_NODELAY, true)
