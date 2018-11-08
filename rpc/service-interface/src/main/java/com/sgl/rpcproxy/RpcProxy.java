@@ -20,6 +20,7 @@ public class RpcProxy {
 				if(client==null) {
 					client = new NettyClient();
 				}
+				System.out.println("invoke method:"+method.getName());
 				return client.connectAndGet(host, port, request);
 			}
 		});

@@ -2,6 +2,8 @@ package com.sgl.netty;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
 import com.sgl.rpcproxy.RpcFutrue;
 import com.sgl.rpcproxy.RpcRequest;
 import com.sgl.rpcproxy.RpcResponse;
@@ -9,7 +11,8 @@ import com.sgl.rpcproxy.RpcResponse;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-
+import io.netty.channel.ChannelHandler.Sharable;
+@Sharable
 public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>{
 	
 	private volatile Channel channel;
@@ -18,7 +21,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		//super.channelActive(ctx);
+		super.channelActive(ctx);
 		RpcRequest msg = new RpcRequest();
 		msg.setMethodName("this is test");
 		ctx.writeAndFlush(msg);
@@ -27,9 +30,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         super.channelRegistered(ctx);
         this.channel = ctx.channel();
-       
+       System.out.println("channelRegistered...");
     }
 	   
+
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
 		System.out.println("client recieve: " + msg);
@@ -48,10 +52,10 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
 
 	public Object handleRpcRequest(RpcRequest request) throws Exception {
 		System.out.println(request);
-//		channel.writeAndFlush(request);
 		RpcFutrue futrue =  new RpcFutrue();
 		futureMap.put(request.getRequestId(), futrue);
-		return futrue.get();
+		channel.writeAndFlush(request);
+		return futrue.get(1,TimeUnit.SECONDS);
 	}
 
 }

@@ -14,6 +14,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import netty.test.marshalling.SubReqClient;
@@ -27,7 +30,7 @@ public class NettyClient {
 	public void connect(String host, int port) throws Exception {
 		EventLoopGroup group = new NioEventLoopGroup();
 		try {
-//			handler = new NettyClientHandler();
+			handler = new NettyClientHandler();
 //			bootstrap = new Bootstrap();
 //			bootstrap.group(group).channel(NioSocketChannel.class)
 //			.option(ChannelOption.TCP_NODELAY, true)
@@ -56,28 +59,31 @@ public class NettyClient {
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
 							// TODO Auto-generated method stub
-							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
-							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new SubReqClientHandler());
+//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
+//							ch.pipeline().addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
+							ch.pipeline().addLast(new ObjectDecoder(1024*1024,ClassResolvers.cacheDisabled(getClass().getClassLoader())));
+							ch.pipeline().addLast(new ObjectEncoder());
+							ch.pipeline().addLast(handler);
 
 						}
 					});
 
 			ChannelFuture future = bootstrap.connect(host, port).sync();
-			future.channel().closeFuture().sync();
+			System.out.println("connected....");
+			//will block
+//			future.channel().closeFuture().sync();
 		} finally {
 			// TODO: handle finally clause
-			group.shutdownGracefully();
+			//bug£º»á¹Ø±Õµô
+//			group.shutdownGracefully();
 		}
 	}
 	
 	public Object connectAndGet(String host, int port, RpcRequest request) throws Exception {
 		if(bootstrap == null) {
-//			connect(host, port);
+			connect(host, port);
 		}
-		return null;//handler.handleRpcRequest(request);
-	}
-	public static void main(String[] args) throws Exception {
-		new SubReqClient().connect("127.0.0.1", 9112);
+		System.out.println("start to send request");
+		return handler.handleRpcRequest(request);
 	}
 }
