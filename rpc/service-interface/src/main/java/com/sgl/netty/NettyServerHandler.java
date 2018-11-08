@@ -9,8 +9,11 @@ import com.sgl.rpcproxy.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler.Sharable;
 
-
+@Sharable
 public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>{
 	
 	NettyServer  server;
@@ -19,25 +22,31 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 		this.server = server;
 	}
 	
-	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		// TODO Auto-generated method stub
-		super.channelRead(ctx, msg);
-		System.out.println(msg+"11111111");
-	}
-	
-	
+//	@Override
+//	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+//		// TODO Auto-generated method stub
+//		super.channelRead(ctx, msg);
+//		System.out.println(msg,111111111111);
+//	}
+
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
 		//��Զ��Ҫ�� Netty �� I/O �߳���ִ���κη� CPU �޶��Ĵ��롪���㽫��� Netty ͵ȡ�������Դ�������Ӱ�쵽����������������
-		System.out.println(msg.getMethodName());
+		System.out.println("recieve method name: "+msg.getMethodName());
 		Runnable task = new Runnable() {
 
 			@Override
 			public void run() {
 				RpcRequest request = msg;
 				System.out.println("read: "+ request.getInterfaceName());
-				Class implClass = InterfaceManager.getInstance().findClass(request.getInterfaceName());
+				Class implClass = null;
+				try {
+					implClass = InterfaceManager.getInstance().findClass(request.getInterfaceName());
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
+				}
+				
 				
 				Method method;
 				try {
@@ -48,15 +57,21 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 					response.setResult(res);
 					response.setRequestId(request.getRequestId());
 					response.setMethodNname(request.getMethodName());
-					ctx.writeAndFlush(response);
+					ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
+						
+						@Override
+						public void operationComplete(ChannelFuture future) throws Exception {
+							System.out.println("ok"+res);
+							
+						}
+					});
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 				
 			}
-		};
-		
+		};	
 		server.submitTask(task);
 	}
 

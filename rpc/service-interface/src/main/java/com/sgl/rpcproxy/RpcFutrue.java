@@ -37,13 +37,13 @@ public class RpcFutrue  implements Future<Object>{
 	@Override
 	public Object get() throws InterruptedException, ExecutionException {
 		latch.await();
-		return response;
+		return response.getResult();
 	}
 
 	@Override
 	public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		latch.await(timeout, unit);
-		return response;
+		return response.getResult();
 	}
 
 }

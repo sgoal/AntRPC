@@ -2,6 +2,7 @@ package com.sgl.netty;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -11,11 +12,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.concurrent.Future;
-import netty.test.marshalling.SubReqServer;
-import netty.test.marshalling.SubReqServerHandler;
 
 
 public class NettyServer {
@@ -55,17 +56,20 @@ public class NettyServer {
 			bootstrap.group(bossGroup, workGroup)
 			.channel(NioServerSocketChannel.class)
 			.option(ChannelOption.SO_BACKLOG, 100)
-			.handler(new LoggingHandler(LogLevel.INFO))
+			.handler(new LoggingHandler(LogLevel.ERROR))
 			.childHandler(new ChannelInitializer<SocketChannel>() {
 
 						@Override
 						protected void initChannel(SocketChannel ch) throws Exception {
 							// TODO Auto-generated method stub
-							ch.pipeline()
-							.addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
-							ch.pipeline()
-							.addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
-							ch.pipeline().addLast(new SubReqServerHandler());
+//							ch.pipeline()
+//							.addLast(MarshallingCodeCFactory.buildingMarshallingEncoder());
+//							ch.pipeline()
+//							.addLast(MarshallingCodeCFactory.buildingMarshallingDecoder());
+//							ch.pipeline().addLast(new TestDecode());
+							ch.pipeline().addLast(new ObjectDecoder(1024*1024,ClassResolvers.weakCachingResolver(getClass().getClassLoader())));
+							ch.pipeline().addLast(new ObjectEncoder());
+							ch.pipeline().addLast(new NettyServerHandler(NettyServer.this));
 							
 						}
 			});
@@ -79,11 +83,8 @@ public class NettyServer {
 		}
 	}
 	
-	public Future<?> submitTask(Runnable task) {
-		return (Future<?>) pool.submit(task);
+	public void submitTask(Runnable task) {
+		pool.execute(task);
 	}
 	
-	public static void main(String[] args) throws Exception {
-		new SubReqServer().bind(9112);
-	}
 }
