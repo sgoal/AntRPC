@@ -11,5 +11,6 @@ public class ConsumenrApp {
 		System.out.println("create proxy");
 		System.out.println(service.sayHello("baby coffe"));
 		Thread.sleep(10);
+		System.out.println("end....");
 	}
 }

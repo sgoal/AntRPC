@@ -1,8 +1,13 @@
 package com.sgl.netty;
 
+import java.util.concurrent.CountDownLatch;
+
 import com.sgl.rpcproxy.RpcConnector;
 import com.sgl.rpcproxy.RpcFutrue;
 import com.sgl.rpcproxy.RpcRequest;
+
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 public class NettyClient {
 	
@@ -25,7 +30,22 @@ public class NettyClient {
 	public Object handleRpcRequest(RpcRequest request) throws Exception {
 		RpcFutrue futrue =  new RpcFutrue();
 		nettyClientConnector.putRequest(request, futrue);
-		nettyClientConnector.getChannelHandler().writeAndFlush(request);
+		CountDownLatch latch = new CountDownLatch(1);
+		nettyClientConnector.getChannelHandler().writeAndFlush(request).addListener(
+				new ChannelFutureListener() {
+					
+					@Override
+					public void operationComplete(ChannelFuture future) throws Exception {
+						if(future.isSuccess()) {
+							latch.countDown();
+						}else {
+							future.channel().close();
+							System.out.println("close.....");
+						}
+						
+					}
+				});
+		latch.await();
 		return futrue.get();
 	}
 }

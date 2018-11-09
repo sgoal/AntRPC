@@ -12,6 +12,7 @@ import com.sgl.rpcproxy.RpcResponse;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -74,10 +75,15 @@ public class NettyClientConnector implements RpcConnector{
 
 			ChannelFuture future = bootstrap.connect(host, port).sync();
 			System.out.println("connected....");
-			future.addListener(new FutureListener() {
+			future.addListener(new ChannelFutureListener() {
 				@Override
-				public void operationComplete(Future future) throws Exception {
-					latch.countDown();
+				public void operationComplete(ChannelFuture future) throws Exception {
+					if(future.isSuccess()) {
+						latch.countDown();
+					}else {
+						future.channel().close();
+						System.out.println("close.....");
+					}
 				}
 			});
 			//will block
