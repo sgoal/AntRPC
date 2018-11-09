@@ -1,19 +1,15 @@
 package com.sgl.netty;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
+import com.sgl.rpcproxy.RpcConnector;
 import com.sgl.rpcproxy.RpcFutrue;
 import com.sgl.rpcproxy.RpcRequest;
 
 public class NettyClient {
 	
-	private NettyClientConnector nettyClientConnector;
-	private Map<String, RpcFutrue> futureMap = new ConcurrentHashMap<>();
+	private RpcConnector nettyClientConnector;
 	
 	public NettyClient() {
-		nettyClientConnector = new NettyClientConnector();
+		nettyClientConnector =  NettyClientConnector.getInstance();
 	}
 	
 	public void stop() {
@@ -28,8 +24,8 @@ public class NettyClient {
 	
 	public Object handleRpcRequest(RpcRequest request) throws Exception {
 		RpcFutrue futrue =  new RpcFutrue();
-		futureMap.put(request.getRequestId(), futrue);
+		nettyClientConnector.putRequest(request, futrue);
 		nettyClientConnector.getChannelHandler().writeAndFlush(request);
-		return futrue.get(1,TimeUnit.SECONDS);
+		return futrue.get();
 	}
 }

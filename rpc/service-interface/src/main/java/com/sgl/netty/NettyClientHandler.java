@@ -16,15 +16,14 @@ import io.netty.channel.ChannelHandler.Sharable;
 public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>{
 	
 	private volatile Channel channel;
-	private Map<String, RpcFutrue> futureMap = new ConcurrentHashMap<>();
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		super.channelActive(ctx);
-		RpcRequest msg = new RpcRequest();
-		msg.setMethodName("this is test");
-		ctx.writeAndFlush(msg);
+//		RpcRequest msg = new RpcRequest();
+//		msg.setMethodName("this is test");
+//		ctx.writeAndFlush(msg);
 	}
    @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -37,8 +36,9 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
 		System.out.println("client recieve: " + msg);
-		RpcFutrue futrue = futureMap.get(msg.getRequestId());
-		futrue.setResponse(msg);
+//		RpcFutrue futrue = 
+		NettyClientConnector.getInstance().putResponse(msg);
+//		futrue.setResponse(msg);
 	}
 	public Channel getChannel() {
 		return channel;
@@ -49,5 +49,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
     	cause.printStackTrace();
         ctx.close();
     }
+    
+    
 
 }

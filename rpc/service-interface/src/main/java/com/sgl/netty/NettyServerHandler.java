@@ -68,10 +68,4 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 		server.submitTask(task);
 	}
 
-
-//	@Override
-//	protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }

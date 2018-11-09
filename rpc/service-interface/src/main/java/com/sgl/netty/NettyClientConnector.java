@@ -1,13 +1,17 @@
 package com.sgl.netty;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import com.sgl.rpcproxy.RpcConnector;
+import com.sgl.rpcproxy.RpcFutrue;
+import com.sgl.rpcproxy.RpcRequest;
+import com.sgl.rpcproxy.RpcResponse;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -24,10 +28,21 @@ import io.netty.util.concurrent.FutureListener;
 
 public class NettyClientConnector implements RpcConnector{
 
+	private Map<String, RpcFutrue> futureMap = new ConcurrentHashMap<>();
 	private volatile Bootstrap bootstrap;
 	private NettyClientHandler handler;
 	private EventLoopGroup group;
 	private CountDownLatch latch = new CountDownLatch(1);
+	
+	private NettyClientConnector(){};
+	
+	private static class InstanceHandler{
+		private static final RpcConnector instance = new NettyClientConnector(); 
+	}
+	
+	public static RpcConnector getInstance() {
+		return InstanceHandler.instance;
+	}
 	
 	@Override
 	public Channel getChannelHandler() throws Exception {
@@ -78,5 +93,16 @@ public class NettyClientConnector implements RpcConnector{
 	
 	public void stop() {
 		group.shutdownGracefully();
+	}
+
+	@Override
+	public void putRequest(RpcRequest request, RpcFutrue futrue) {
+		futureMap.put(request.getRequestId(), futrue);
+	}
+
+	@Override
+	public void putResponse(RpcResponse response) {
+		futureMap.get(response.getRequestId()).setResponse(response);
+		
 	}
 }
