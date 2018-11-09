@@ -10,7 +10,7 @@ public class RpcRequest implements Serializable{
 	 */
 	private static final long serialVersionUID = 8912477931664988954L;
 	
-	//TODO 改为不可能出错的id
+	//TODO 鏀逛负涓嶅彲鑳藉嚭閿欑殑id
 	private String requestId = UUID.randomUUID().toString();
 	
 	private String interfaceName;

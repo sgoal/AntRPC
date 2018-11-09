@@ -50,12 +50,4 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
         ctx.close();
     }
 
-	public Object handleRpcRequest(RpcRequest request) throws Exception {
-		System.out.println(request);
-		RpcFutrue futrue =  new RpcFutrue();
-		futureMap.put(request.getRequestId(), futrue);
-		channel.writeAndFlush(request);
-		return futrue.get(1,TimeUnit.SECONDS);
-	}
-
 }

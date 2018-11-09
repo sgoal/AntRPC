@@ -7,7 +7,6 @@ import com.sgl.rpcproxy.RpcRequest;
 import com.sgl.rpcproxy.RpcResponse;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
