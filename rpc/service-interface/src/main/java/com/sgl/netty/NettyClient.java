@@ -29,15 +29,15 @@ public class NettyClient {
 	public Object connectAndGet(String host, int port, RpcRequest request) throws Exception {
 		nettyClientConnector.connect(host, port);
 		System.out.println("start to send request");
-		return handleRpcRequest(request);
+		return handleRpcRequest(request).get();
 	}
 	
 	public Object connectAndGet(RpcRequest request) throws Exception {
 		System.out.println("start to send request");
-		return handleRpcRequest(request);
+		return handleRpcRequest(request).get();
 	}
 	
-	public Object handleRpcRequest(RpcRequest request) throws Exception {
+	public RpcFutrue handleRpcRequest(RpcRequest request) throws Exception {
 		RpcFutrue futrue =  new RpcFutrue();
 		nettyClientConnector.putRequest(request, futrue);
 		CountDownLatch latch = new CountDownLatch(1);
@@ -56,11 +56,15 @@ public class NettyClient {
 					}
 				});
 		latch.await();
-		return futrue.get();
+		return futrue;
 	}
 	
 	public <T> T createProxy(Class<T> clazz) {
 		RpcProxy rpcProxy =  new RpcProxy();
 		return (T) rpcProxy.getProxy(clazz);
+	}
+	
+	public <T> RpcFutrue createAsyncCall(Class<T> clazz, String methodName, Object[] args) throws Exception {
+		return RpcProxy.call(clazz, methodName, this, args);
 	}
 }

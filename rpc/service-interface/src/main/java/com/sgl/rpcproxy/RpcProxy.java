@@ -31,8 +31,18 @@ public class RpcProxy {
 		});
 	}
 	
-//	public RpcFutrue call(Class clazz,String methodName) {
-//		
-//	}
+	public static <T> RpcFutrue call(Class<T> clazz,String methodName,
+			NettyClient client,Object[] args) throws Exception {
+		RpcRequest request = new RpcRequest(clazz.getSimpleName(), methodName, 
+				getArgsTypes(args), args);
+		return client.handleRpcRequest(request);
+	}
 	
+	public static Class[] getArgsTypes(Object[] args) {
+		Class[] classes = new Class[args.length];
+		for(int i=0;i< args.length;i++) {
+			classes[i] = args[i].getClass();
+		}
+		return classes;
+	}
 }

@@ -1,5 +1,7 @@
 package com.sgl.rpcproxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -9,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 public class RpcFutrue  implements Future<Object>{
 	CountDownLatch latch;
 	volatile RpcResponse response;
+	List<RpcAsyncListener> listeners = new ArrayList<>();
 	
 	
 	public RpcFutrue(){
@@ -18,6 +21,11 @@ public class RpcFutrue  implements Future<Object>{
 	public void setResponse(RpcResponse response) {
 		this.response = response;
 		latch.countDown();
+		synchronized (listeners) {
+			for(RpcAsyncListener listener: listeners) {
+				listener.onResultArrived(this);
+			}
+		}
 	}
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
@@ -44,6 +52,12 @@ public class RpcFutrue  implements Future<Object>{
 	public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		latch.await(timeout, unit);
 		return response.getResult();
+	}
+	
+	public void addResultListener(RpcAsyncListener listener) {
+		synchronized (listeners) {
+			listeners.add(listener);
+		}
 	}
 
 }
