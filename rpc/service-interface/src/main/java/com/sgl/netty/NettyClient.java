@@ -1,6 +1,10 @@
 package com.sgl.netty;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.sgl.rpcproxy.RpcConnector;
 import com.sgl.rpcproxy.RpcFutrue;
@@ -11,11 +15,12 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 
 public class NettyClient {
-	
+	private ExecutorService pool;
 	private RpcConnector nettyClientConnector;
 	
 	public NettyClient() {
 		nettyClientConnector =  NettyClientConnector.getInstance();
+		pool = Executors.newFixedThreadPool(2*Runtime.getRuntime().availableProcessors());
 	}
 	
 	public void stop() {
@@ -38,7 +43,7 @@ public class NettyClient {
 	}
 	
 	public RpcFutrue handleRpcRequest(RpcRequest request) throws Exception {
-		RpcFutrue futrue =  new RpcFutrue();
+		RpcFutrue futrue =  new RpcFutrue(this);
 		nettyClientConnector.putRequest(request, futrue);
 		CountDownLatch latch = new CountDownLatch(1);
 		nettyClientConnector.getChannelHandler().writeAndFlush(request).addListener(
@@ -66,5 +71,13 @@ public class NettyClient {
 	
 	public <T> RpcFutrue createAsyncCall(Class<T> clazz, String methodName, Object[] args) throws Exception {
 		return RpcProxy.call(clazz, methodName, this, args);
+	}
+	
+	public <V> Future<V> submitTask(Callable<V> task) {
+		return pool.submit(task);
+	}
+	
+	public void executeTask(Runnable task) {
+		pool.execute(task);
 	}
 }

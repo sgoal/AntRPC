@@ -8,24 +8,34 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.sgl.netty.NettyClient;
+
 public class RpcFutrue  implements Future<Object>{
-	CountDownLatch latch;
-	volatile RpcResponse response;
-	List<RpcAsyncListener> listeners = new ArrayList<>();
+	private CountDownLatch latch;
+	private volatile RpcResponse response;
+	private List<RpcAsyncListener> listeners = new ArrayList<>();
+	private NettyClient client;
 	
-	
-	public RpcFutrue(){
+	public RpcFutrue(NettyClient client){
 		latch = new CountDownLatch(1);
+		this.client = client;
 	}
 	
 	public void setResponse(RpcResponse response) {
 		this.response = response;
 		latch.countDown();
-		synchronized (listeners) {
-			for(RpcAsyncListener listener: listeners) {
-				listener.onResultArrived(this);
+		client.executeTask(new Runnable() {
+			
+			@Override
+			public void run() {
+				synchronized (listeners) {
+					for(RpcAsyncListener listener: listeners) {
+						listener.onResultArrived(RpcFutrue.this);
+					}
+				}
 			}
-		}
+		});
+		
 	}
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
