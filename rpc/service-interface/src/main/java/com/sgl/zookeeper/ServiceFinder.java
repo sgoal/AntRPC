@@ -20,7 +20,7 @@ public class ServiceFinder  extends ZookeeperConnector{
 	
 	public ServiceFinder(String zkHost) throws Exception {
 		super(zkHost);
-		findAddress();
+		findServices();
 	}
 	
 	public void findServices() throws Exception {
@@ -57,7 +57,7 @@ public class ServiceFinder  extends ZookeeperConnector{
 			}
 			addresses = datas;
 		}
-		
+		System.out.println("addresses: " + addresses);
 		
 	}
 	
