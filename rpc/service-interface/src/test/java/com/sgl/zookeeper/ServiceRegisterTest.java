@@ -1,4 +1,4 @@
-package com.sql.zookeeper;
+package com.sgl.zookeeper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +10,9 @@ import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.data.Stat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import com.sgl.constant.Config;
+import com.sgl.zookeeper.ServiceRegister;
 
 class ServiceRegisterTest {
 	static ServiceRegister serviceRegister;
@@ -30,6 +33,39 @@ class ServiceRegisterTest {
 	}
 	
 	@Test
+	void testCreateNode() throws Exception {
+		serviceRegister.createRootNode();
+		System.out.println("root: "+
+				serviceRegister.getZooKeeper().exists(Config.ZOOKEEPER_SERVICE_PATH, false));
+	}
+	
+	@Test
+	void testAddNode() throws Exception {
+		serviceRegister.addNode("127.0.0.1".getBytes());
+		serviceRegister.addNode("127.0.0.2".getBytes());
+		System.out.println("new node"+
+				serviceRegister.getZooKeeper().exists(Config.ZOOKEEPER_DATA_PATH, new Watcher() {
+
+					@Override
+					public void process(WatchedEvent event) {
+						try {
+							System.out.println("watcher: "
+						+serviceRegister.getZooKeeper().exists(Config.ZOOKEEPER_DATA_PATH,false));
+						} catch (KeeperException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+					
+				}));
+		Thread.sleep(10000);
+	}
+	
+//	@Test
 	void testGetChildren() throws Exception {
 		Stat stat = serviceRegister.getZooKeeper().exists("/testNode", false);
 		if(stat!=null) {
