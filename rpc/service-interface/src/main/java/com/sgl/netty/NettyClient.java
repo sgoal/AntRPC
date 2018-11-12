@@ -31,6 +31,13 @@ public class NettyClient {
 		nettyClientConnector.connect(host, port);
 	}
 	
+	public void connect(String hostAndPort) throws Exception {
+		String[] datas = hostAndPort.split(":");
+		String host = datas[0];
+		int port = Integer.valueOf(datas[1]);
+		nettyClientConnector.connect(host, port);
+	}
+	
 	public Object connectAndGet(String host, int port, RpcRequest request) throws Exception {
 		nettyClientConnector.connect(host, port);
 		System.out.println("start to send request");
