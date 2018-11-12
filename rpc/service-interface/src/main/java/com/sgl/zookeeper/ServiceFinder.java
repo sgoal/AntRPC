@@ -17,7 +17,7 @@ public class ServiceFinder  extends ZookeeperConnector{
 	
 	public void findServices() throws Exception {
 		List<String> datas = new ArrayList<>();
-		List<String> nodes = zoo.getChildren(Config.ZOOKEEPER_DATA_PATH, new Watcher() {
+		List<String> nodes = zoo.getChildren(Config.ZOOKEEPER_SERVICE_PATH, new Watcher() {
 			
 			@Override
 			public void process(WatchedEvent event) {

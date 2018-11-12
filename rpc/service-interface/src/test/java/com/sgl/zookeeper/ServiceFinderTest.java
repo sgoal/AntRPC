@@ -13,7 +13,8 @@ class ServiceFinderTest {
 		serviceFinder = new ServiceFinder("127.0.0.1:4981");
 	}
 	@Test
-	void test() {
+	void test() throws Exception {
+		serviceFinder.findServices();
 		System.out.println(serviceFinder.getAddresses());
 	}
 
