@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import com.sgl.impl.HelloServiceImpl;
 import com.sgl.zookeeper.ServiceFinder;
 import com.sgl.zookeeper.ServiceRegister;
 
 class NettyServerTest {
-
+	static {
+		HelloServiceImpl.register();
+	}
 	@Test
 	void test() throws Exception {
 		NettyServer server = new NettyServer("127.0.0.1:4981");
