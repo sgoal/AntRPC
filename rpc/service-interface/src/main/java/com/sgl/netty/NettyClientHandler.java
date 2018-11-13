@@ -1,11 +1,5 @@
 package com.sgl.netty;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.sgl.rpcproxy.RpcFutrue;
-import com.sgl.rpcproxy.RpcRequest;
 import com.sgl.rpcproxy.RpcResponse;
 
 import io.netty.channel.Channel;
