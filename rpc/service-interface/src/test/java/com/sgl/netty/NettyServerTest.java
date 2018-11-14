@@ -1,8 +1,8 @@
 package com.sgl.netty;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 
 import com.sgl.impl.HelloServiceImpl;
 import com.sgl.zookeeper.ServiceFinder;
