@@ -1,4 +1,4 @@
-package com.sgl.provider;
+package com.sgl.netty;
 
 import com.sgl.impl.HelloServiceImpl;
 import com.sgl.netty.NettyServer;
