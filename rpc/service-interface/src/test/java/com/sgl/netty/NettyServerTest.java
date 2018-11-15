@@ -6,12 +6,14 @@ package com.sgl.netty;
 import org.junit.jupiter.api.Test;
 
 import com.sgl.impl.HelloServiceImpl;
+import com.sgl.interfaces.PackageConfig;
+import com.sgl.provider.InterfaceManager;
 import com.sgl.zookeeper.ServiceFinder;
 import com.sgl.zookeeper.ServiceRegister;
 
 class NettyServerTest {
 	static {
-		HelloServiceImpl.register();
+		InterfaceManager.getInstance().setConfig(PackageConfig.class);
 	}
 	@Test
 	void test() throws Exception {

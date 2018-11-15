@@ -49,7 +49,11 @@ public class InterfaceManager {
 	}
 	
 	public void setConfig(Object config) {
-		PackageScan packageScan = config.getClass().getAnnotation(PackageScan.class);
+		setConfig(config.getClass());
+	}
+	
+	public void setConfig(Class<?> config) {
+		PackageScan packageScan = config.getAnnotation(PackageScan.class);
 		String packageString = packageScan.value();
 		List<Class<?>> clazzes = ClassUtils.getClassFromPackage(packageString, RpcServiceImpl.class);
 		for (Class<?>clazz : clazzes) {
