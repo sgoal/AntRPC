@@ -2,7 +2,8 @@ package com.sgl.netty;
 
 
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import com.sgl.impl.HelloServiceImpl;
 import com.sgl.zookeeper.ServiceFinder;
