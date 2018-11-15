@@ -4,9 +4,5 @@
   <artifactId>rpc</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <modules>
-  	<module>service-interface</module>
-  	<module>service-provider</module>
-  	<module>consumer</module>
-  </modules>
+
 </project>
