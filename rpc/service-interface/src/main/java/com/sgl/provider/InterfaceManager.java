@@ -1,7 +1,12 @@
 package com.sgl.provider;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.sgl.annotation.PackageScan;
+import com.sgl.annotation.RpcServiceImpl;
+import com.sgl.utils.ClassUtils;
 
 /**
  * 
@@ -41,6 +46,16 @@ public class InterfaceManager {
 			return (Class<? extends T>) interfaceToImpl.get(name);
 		}
 		throw new IllegalArgumentException("no such interface implement :"+name);
+	}
+	
+	public void setConfig(Object config) {
+		PackageScan packageScan = config.getClass().getAnnotation(PackageScan.class);
+		String packageString = packageScan.value();
+		List<Class<?>> clazzes = ClassUtils.getClassFromPackage(packageString, RpcServiceImpl.class);
+		for (Class<?>clazz : clazzes) {
+			RpcServiceImpl impl = clazz.getAnnotation(RpcServiceImpl.class);
+			register(impl.value().getName(), clazz);
+		}
 	}
 	
 }

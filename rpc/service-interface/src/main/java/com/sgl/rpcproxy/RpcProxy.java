@@ -19,7 +19,7 @@ public class RpcProxy {
 			
 			@Override
 			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				RpcRequest request = new RpcRequest(clazz.getSimpleName(), method.getName(), 
+				RpcRequest request = new RpcRequest(clazz.getName(), method.getName(), 
 						method.getParameterTypes(), args);
 
 				if(client==null) {
@@ -33,7 +33,7 @@ public class RpcProxy {
 	
 	public static <T> RpcFutrue call(Class<T> clazz,String methodName,
 			NettyClient client,Object[] args) throws Exception {
-		RpcRequest request = new RpcRequest(clazz.getSimpleName(), methodName, 
+		RpcRequest request = new RpcRequest(clazz.getName(), methodName, 
 				getArgsTypes(args), args);
 		return client.handleRpcRequest(request);
 	}

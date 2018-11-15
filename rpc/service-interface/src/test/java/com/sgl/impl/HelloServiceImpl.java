@@ -12,7 +12,7 @@ import com.sgl.provider.InterfaceManager;
 @RpcServiceImpl(HelloService.class)
 public class HelloServiceImpl implements HelloService {
 	static public void register() {
-		InterfaceManager.getInstance().register("HelloService", HelloServiceImpl.class);
+//		InterfaceManager.getInstance().register(HelloService.class.getName(), HelloServiceImpl.class);
 	}
 	
 	public HelloServiceImpl() {
