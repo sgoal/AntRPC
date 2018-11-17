@@ -73,16 +73,13 @@ public class NettyClientConnector implements RpcConnector{
 
 			ChannelFuture future = bootstrap.connect(host, port).sync();
 			System.out.println("connected....");
-			future.addListener(new ChannelFutureListener() {
-				@Override
-				public void operationComplete(ChannelFuture future) throws Exception {
-					if(future.isSuccess()) {
+			future.addListener((ChannelFuture future0) -> {
+					if(future0.isSuccess()) {
 						latch.countDown();
 					}else {
-						future.channel().close();
+						future0.channel().close();
 						System.out.println("close.....");
 					}
-				}
 			});
 			//will block
 //			future.channel().closeFuture().sync();

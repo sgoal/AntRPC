@@ -20,12 +20,10 @@ public class ZookeeperConnector {
 	}
 
 	public ZooKeeper connect() throws Exception {
-		zoo = new ZooKeeper(host, Config.ZK_SESSION_TIMEOUT, new Watcher() {
-			public void process(WatchedEvent we) {
-				if (we.getState() == KeeperState.SyncConnected) {
+		zoo = new ZooKeeper(host, Config.ZK_SESSION_TIMEOUT, watchedEvent-> {
+				if (watchedEvent.getState() == KeeperState.SyncConnected) {
 					connectedSignal.countDown();
 				}
-			}
 		});
 		connectedSignal.await();
 		return zoo;

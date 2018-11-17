@@ -24,16 +24,12 @@ public class RpcFutrue  implements Future<Object>{
 	public void setResponse(RpcResponse response) {
 		this.response = response;
 		latch.countDown();
-		client.executeTask(new Runnable() {
-			
-			@Override
-			public void run() {
+		client.executeTask(()->{
 				synchronized (listeners) {
 					for(RpcAsyncListener listener: listeners) {
 						listener.onResultArrived(RpcFutrue.this);
 					}
 				}
-			}
 		});
 		
 	}

@@ -26,10 +26,7 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 	public void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
 		//��Զ��Ҫ�� Netty �� I/O �߳���ִ���κη� CPU �޶��Ĵ��롪���㽫��� Netty ͵ȡ�������Դ�������Ӱ�쵽����������������
 		System.out.println("recieve method name: "+msg.getMethodName());
-		Runnable task = new Runnable() {
-
-			@Override
-			public void run() {
+		Runnable task = ()->{
 				RpcRequest request = msg;
 				System.out.println("read: "+ request.getInterfaceName());
 				Class implClass = null;
@@ -62,8 +59,6 @@ public class NettyServerHandler  extends SimpleChannelInboundHandler<RpcRequest>
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
-				
-			}
 		};	
 		server.submitTask(task);
 	}

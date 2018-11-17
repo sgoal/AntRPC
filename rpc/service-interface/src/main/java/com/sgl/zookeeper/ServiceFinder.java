@@ -25,10 +25,8 @@ public class ServiceFinder  extends ZookeeperConnector{
 	
 	public void findServices() throws Exception {
 		List<String> datas = new ArrayList<>();
-		List<String> nodes = zoo.getChildren(Config.ZOOKEEPER_SERVICE_PATH, new Watcher() {
-			
-			@Override
-			public void process(WatchedEvent event) {
+		List<String> nodes = zoo.getChildren(Config.ZOOKEEPER_SERVICE_PATH, event->{
+
 				if(event.getType() == EventType.NodeChildrenChanged) {
 					try {
 						findServices();
@@ -36,7 +34,7 @@ public class ServiceFinder  extends ZookeeperConnector{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+
 				
 			}
 		});

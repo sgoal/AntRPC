@@ -31,10 +31,7 @@ public class NettyClient {
 	public NettyClient(String zkHost) throws Exception {
 		this();
 		serviceFinder = new ServiceFinder(zkHost);
-		String address = serviceFinder.findAddress(new ServiceChangeListener() {
-			
-			@Override
-			public void onServiceChange(String address, ServiceChangeType type) {
+		String address1 = serviceFinder.findAddress((String address, ServiceChangeType type)->{
 				System.out.println(String.format("service %s change: %s" , address , type));
 				stop();
 				
@@ -47,9 +44,8 @@ public class NettyClient {
 						e.printStackTrace();
 					}
 				}
-			}
 		});
-		connect(address);
+		connect(address1);
 	}
 	
 	public void stop() {
@@ -83,18 +79,13 @@ public class NettyClient {
 		nettyClientConnector.putRequest(request, futrue);
 		CountDownLatch latch = new CountDownLatch(1);
 		nettyClientConnector.getChannelHandler().writeAndFlush(request).addListener(
-				new ChannelFutureListener() {
-					
-					@Override
-					public void operationComplete(ChannelFuture future) throws Exception {
+				(ChannelFuture future) ->{
 						if(future.isSuccess()) {
 							latch.countDown();
 						}else {
 							future.channel().close();
 							System.out.println("close.....");
 						}
-						
-					}
 				});
 		latch.await();
 		return futrue;
