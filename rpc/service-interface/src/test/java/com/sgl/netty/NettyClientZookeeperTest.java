@@ -34,19 +34,14 @@ class NettyClientZookeeperTest {
 				"sayHello", new Object[] {"this is async call"});
 		
 		futrue.addResultListener(new RpcAsyncListener() {
-			
 			@Override
 			public void onResultArrived(RpcFutrue futrue) {
 				try {
 					Object res = futrue.get();
 					System.out.println("async get res: " + res);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
 				
 			}
 		});
